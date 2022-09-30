@@ -83,6 +83,24 @@
           }
         }
       }
+    },
+    "/get_receipt/{user_id}": {
+      "get": {
+        "js_module": "endpoints/banking.js",
+        "js_function": "get_receipt",
+        "forwarding_required": "never",
+        "authn_policies": ["user_cert"],
+        "mode": "historical",
+        "openapi": {
+          "responses": {
+            "200": {
+              "description": "Ok"
+            }
+          },
+          "security": [],
+          "parameters": []
+        }
+      }
     }
   }
 }

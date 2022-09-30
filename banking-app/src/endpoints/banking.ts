@@ -1,4 +1,5 @@
 import * as ccfapp from "@microsoft/ccf-app";
+import { ccf } from "@microsoft/ccf-app/global";
 
 // TODO: Fix `any`s
 type DepositRequest = any;
@@ -108,6 +109,12 @@ export function transfer(
   let body = request.body.json();
   const value = parseInt(body.value);
 
+  if (body.claim != undefined)
+  {
+    let transfer_claim = userId + ":" + userIdTo + value;
+    ccf.rpc.setClaimsDigest(ccf.digest("SHA-256", ccf.strToBuf(transfer_claim)));
+  }
+
   // TODO: Duplicated 'Read current balance'
   let balance = 0;
   if (logMap.has(userId))
@@ -133,4 +140,18 @@ export function transfer(
   logMap.set(userIdTo, { balance: balanceTo });
 
   return { body: "OK" };
+}
+
+type ReceiptRequest = any;
+type ReceiptResponse = any;
+
+export function get_receipt(
+  request: ccfapp.Request<ReceiptRequest>
+  ): ccfapp.Response<ReceiptResponse> {
+  let id = request.params.user_id;
+  const kv = ccf.historicalState.kv["accounts"];
+  let msg = kv.get(ccf.strToBuf(id));
+  let result = { body: { msg: ccf.bufToStr(msg), receipt: {} } };
+  result.body.receipt = ccf.historicalState.receipt;
+  return result;
 }

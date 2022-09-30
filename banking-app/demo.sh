@@ -44,3 +44,6 @@ curl https://127.0.0.1:8000/app/transfer/$user1_id -X POST --cacert service_cert
 curl https://127.0.0.1:8000/app/balance -X GET --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem
 
 curl https://127.0.0.1:8000/app/balance -X GET --cacert service_cert.pem --cert user1_cert.pem --key user1_privk.pem
+
+curl https://127.0.0.1:8000/app/get_receipt/$user1_id -X POST --cacert service_cert.pem --cert user0_cert.pem --key user0_privk.pem
+
